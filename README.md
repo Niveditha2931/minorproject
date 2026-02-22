@@ -1,7 +1,7 @@
-# Sahyog: Centralized Disaster Response and Inventory Management System 🌍
+# AI-Powered Real-Time Operations Dashboard for Crisis Response 🌍
 
 <p align="center">
-  <a href="https://sahyog-project.vercel.app/" target="_blank">
+  <a href="https://crisis-response-dashboard.vercel.app/" target="_blank">
     <img src="https://img.shields.io/badge/Live%20Now-0066FF?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Now">
   </a>
 </p>
@@ -15,13 +15,13 @@
 
 <div align="center">
 
-[![GitHub Issues](https://img.shields.io/github/issues/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/Sahyog/issues)
-[![GitHub Forks](https://img.shields.io/github/forks/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/Sahyog/network)
-[![GitHub Stars](https://img.shields.io/github/stars/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/Sahyog/stargazers)
-[![Contributors](https://img.shields.io/github/contributors/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/Sahyog/graphs/contributors)
-[![License](https://img.shields.io/github/license/ArshTiwari2004/Sahyog)](LICENSE)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ArshTiwari2004/Sahyog)
-![GitHub last commit](https://img.shields.io/github/last-commit/ArshTiwari2004/Sahyog)
+[![GitHub Issues](https://img.shields.io/github/issues/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/crisis-response-dashboard/issues)
+[![GitHub Forks](https://img.shields.io/github/forks/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/crisis-response-dashboard/network)
+[![GitHub Stars](https://img.shields.io/github/stars/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/crisis-response-dashboard/stargazers)
+[![Contributors](https://img.shields.io/github/contributors/ArshTiwari2004/Recap)](https://github.com/ArshTiwari2004/crisis-response-dashboard/graphs/contributors)
+[![License](https://img.shields.io/github/license/ArshTiwari2004/crisis-response-dashboard)](LICENSE)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ArshTiwari2004/crisis-response-dashboard)
+![GitHub last commit](https://img.shields.io/github/last-commit/ArshTiwari2004/crisis-response-dashboard)
 
 </div>
 
@@ -41,12 +41,12 @@ In large-scale disasters like floods, earthquakes, and cyclones, these inefficie
 
 ## 💡 Solution Overview
 
-**Sahyog** is an AI-powered disaster response platform designed to enhance preparedness, efficiency, and coordination in disaster management. It leverages **Google Cloud Technologies** and **AI models** to predict disasters, optimize resource management, and provide real-time coordination.
+**AI-Powered Real-Time Operations Dashboard for Crisis Response** is an AI-powered disaster response platform designed to enhance preparedness, efficiency, and coordination in disaster management. It leverages **Google Cloud Technologies** and **AI models** to predict disasters, optimize resource management, and provide real-time coordination.
 
 ### Key Features:
 - **Disaster Prediction and Early Warnings** using AI models deployed on Vertex AI.
 - **Incident Reporting and Monitoring** through mobile and web apps using Gemini APIs for image, video, and text analysis.
-- **Resource Inventory Management** with real-time tracking using RFID sensors and transparent logging through Hyperledger Fabric.
+- **Resource Inventory Management** with real-time tracking using REST APIs and WebSocket updates.
 - **Task Allocation and Response Management** using AI algorithms to assign the nearest responders.
 - **Multi-channel Communication** for real-time notifications using Twilio and Firebase Cloud Messaging.
 - **Post-Disaster Analysis** to generate actionable insights for future disaster management.
@@ -67,8 +67,7 @@ In large-scale disasters like floods, earthquakes, and cyclones, these inefficie
 |-----------------------|-----------------------------------------------------------------------------|
 | **Node.js + Express** | Building RESTful APIs for the backend.                                      |
 | **FastAPI**           | Serving AI models and handling AI-related requests.                         |
-| **Apache Kafka**      | Real-time data streaming from satellites, sensors, and drones.             |
-| **Apache Spark**      | Large-scale data processing and post-disaster analysis.                     |
+| **WebSocket**         | Real-time bidirectional communication for live updates.                     |
 
 ### Frontend
 | **Technology**       | **Purpose**                                                                 |
@@ -85,8 +84,8 @@ In large-scale disasters like floods, earthquakes, and cyclones, these inefficie
 ### Resource Management
 | **Technology**       | **Purpose**                                                                 |
 |-----------------------|-----------------------------------------------------------------------------|
-| **RFID Sensors**      | Real-time tracking of relief resources like medical kits and food supplies. |
-| **Hyperledger Fabric**| Blockchain-based transparent logging of resource distribution.              |
+| **REST APIs**         | CRUD operations for resource tracking and allocation.                       |
+| **WebSocket**         | Real-time resource status updates and notifications.                        |
 
 ### Communication
 | **Technology**       | **Purpose**                                                                 |
@@ -105,28 +104,27 @@ In large-scale disasters like floods, earthquakes, and cyclones, these inefficie
 |-----------------------|-----------------------------------------------------------------------------|
 | **Google Cloud Storage (GCS)** | Storing satellite images, sensor data, and AI models.                  |
 | **Docker**            | Containerization of backend and AI services.                               |
-| **Kubernetes**        | Orchestrating containerized applications for scalability.                  |
-| **Terraform**         | Infrastructure as Code (IaC) for managing cloud resources.                 |
+| **Docker Compose**    | Local development and simplified deployment.                               |
 
 ---
 
 ## 🔄 Workflow
 
-1. **Data Collection**: Real-time data from satellites, sensors, and drones is streamed via **Apache Kafka** and stored in **Google Cloud Storage (GCS)**.
-2. **Disaster Prediction**: **Vertex AI** trains and deploys AI models (LSTMs, CNNs, GANs) for disaster prediction using real-time data.
+1. **Data Collection**: Real-time data from sensors and user inputs is received via **REST APIs** and pushed to clients via **WebSocket**.
+2. **Disaster Prediction**: **Vertex AI** trains and deploys AI models (LSTMs, CNNs, GANs) for disaster prediction using collected data.
 3. **Incident Reporting**: Citizens report incidents via a **Flutter app**, and **Gemini APIs** analyze images, text, and voice inputs for severity assessment.
 4. **Decision Making**: AI models process predictions and reports to generate alerts using **Vertex AI** and **Gemini APIs**.
 5. **Alert Generation**: Multilingual alerts are sent via **Twilio** (SMS/calls) and **Firebase Cloud Messaging** (push notifications).
-6. **Resource Management**: Resources are tracked using **RFID sensors**, and **Hyperledger Fabric** ensures transparent distribution.
-7. **Task Allocation**: AI optimizes task assignments using **Dijkstra’s Algorithm** and real-time data from **Google Maps API**.
-8. **Post-Disaster Analysis**: Data is aggregated using **Apache Spark**, and **Vertex AI** generates insights for future preparedness.
+6. **Resource Management**: Resources are tracked via **REST APIs** with real-time **WebSocket** updates for status changes.
+7. **Task Allocation**: AI optimizes task assignments using **Dijkstra's Algorithm** and real-time data from **Google Maps API**.
+8. **Post-Disaster Analysis**: Data is aggregated and **Vertex AI** generates insights for future preparedness.
 
 
 
 
 ## Explaining the ai-service folder in detail 
 
-This AI service powers the core intelligence layer of the Sahyog disaster management system, providing:
+This AI service powers the core intelligence layer of the AI-Powered Real-Time Operations Dashboard for Crisis Response, providing:
 
 - **Real-time disaster prediction** using satellite/drone/sensor data
 - **Multimodal damage assessment** (images, text reports, sensor data)
@@ -171,7 +169,7 @@ This AI service powers the core intelligence layer of the Sahyog disaster manage
 2.  **Build Docker Image**
 
 ```bash
-docker build -t sahyog-ai-service \
+docker build -t crisis-response-ai-service \
   --build-arg GCP_PROJECT_ID=$GCP_PROJECT_ID \
   --build-arg GEMINI_API_KEY=$GEMINI_API_KEY \
   -f ai-service/Dockerfile .
@@ -184,8 +182,8 @@ docker run -d \
   -e GCP_PROJECT_ID=$GCP_PROJECT_ID \
   -e GEMINI_API_KEY=$GEMINI_API_KEY \
   -e GCS_BUCKET=$GCS_BUCKET \
-  --name sahyog-ai \
-  sahyog-ai-service
+  --name crisis-response-ai \
+  crisis-response-ai-service
 ```
 
 4. Verify Deployment
@@ -256,8 +254,8 @@ To set up the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/CodeCanvas/Sahyog.git
-   cd Sahyog
+   git clone https://github.com/CodeCanvas/crisis-response-dashboard.git
+   cd crisis-response-dashboard
 
 ### 2. Install dependencies
 
@@ -305,40 +303,36 @@ cd ../../frontend/web
 npm start
 ```
 
-### Implementing docker for Sahyog
+### Implementing docker for Crisis Response Dashboard
 
 #### To deploy:
 
 Build the image: 
 
 ```bash
-docker build -t sahyog-ai-service 
+docker build -t crisis-response-ai-service 
 ```
 
 Then run the command:
 
 ```bash
-docker run -p 8000:8000 -e GCP_PROJECT_ID=your-project sahyog-ai-service
+docker run -p 8000:8000 -e GCP_PROJECT_ID=your-project crisis-response-ai-service
 ```
 
 ## 📂 Project Structure
 
 ```bash
-Sahyog/
+crisis-response-dashboard/
 ├── backend/  
-│   ├── api/               # Main API server (Node.js + Express)  
-│   ├── ai-service/        # AI model service (Python + FastAPI)  
-│   ├── data-pipeline/     # Data processing pipeline  
-│   └── blockchain/        # Hyperledger Fabric setup  
+│   ├── api/               # Main API server (Node.js + Express + WebSocket)  
+│   └── ai-service/        # AI model service (Python + FastAPI)  
 │
 ├── frontend/  
 │   ├── web/               # React.js web application  
 │   └── mobile/            # Flutter mobile application  
 │
 ├── infrastructure/  
-│   ├── terraform/         # Infrastructure as Code  
-│   ├── docker/            # Docker configurations  
-│   └── kubernetes/        # Kubernetes configs  
+│   └── docker/            # Docker configurations  
 │
 ├── docs/                  # Documentation  
 ├── scripts/               # Utility scripts  
@@ -361,7 +355,7 @@ Sahyog/
 
 
 ## 🤝 Contributing
-Contributions to project Sahyog are always welcome! Please follow these steps:
+Contributions to AI-Powered Real-Time Operations Dashboard for Crisis Response are always welcome! Please follow these steps:
 
 1. Fork the repository.
 

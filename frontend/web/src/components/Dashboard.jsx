@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
 import { 
   AlertTriangle, 
   MapPin, 
@@ -79,30 +78,25 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="bg-[#0F172A] min-h-screen text-white flex">
-      {/* Sidebar */}
-      <Sidebar/>
-
-      {/* Main Content */}
-      <div className="flex-1 p-8">
-        {/* Overview Cards */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          {overviewCards.map((card, index) => (
-            <div 
-              key={index} 
-              className="bg-[#1E293B] p-5 rounded-xl shadow-lg border border-gray-700 hover:border-blue-600 transition-all duration-300"
-            >
-              <div className="flex justify-between items-center mb-3">
-                {card.icon}
-                <div className="text-right">
-                  <div className="text-sm text-gray-400">{card.label}</div>
-                  <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
-                  <div className="text-xs text-gray-300">{card.subtext}</div>
-                </div>
+    <div className="text-white">
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {overviewCards.map((card, index) => (
+          <div 
+            key={index} 
+            className="bg-[#1E293B] p-5 rounded-xl shadow-lg border border-gray-700 hover:border-blue-600 transition-all duration-300"
+          >
+            <div className="flex justify-between items-center mb-3">
+              {card.icon}
+              <div className="text-right">
+                <div className="text-sm text-gray-400">{card.label}</div>
+                <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
+                <div className="text-xs text-gray-300">{card.subtext}</div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
 
         {/* Disaster Map & Alerts */}
         <div className="grid grid-cols-3 gap-6 mb-6">
@@ -153,7 +147,7 @@ const Dashboard = () => {
             <BarChart2 className="w-5 h-5 mr-2 text-green-400" />
             Resource Status
           </h2>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {resourceStatus.map((resource) => (
               <div key={resource.name}>
                 <div className="flex justify-between text-sm mb-2">
@@ -170,7 +164,6 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
-      </div>
     </div>
   );
 };

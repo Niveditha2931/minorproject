@@ -1,9 +1,13 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useAuth } from "../contexts/AuthContext"
+import LoginModal from "./LoginModal"
 import {
   AlertTriangle,
   AlertCircle,
+  AlertOctagon,
   Brain,
   Smartphone,
   FileScanIcon as FileAnalytics,
@@ -11,9 +15,7 @@ import {
   Users,
   Bell,
   ChevronRight,
-  Github,
   Twitter,
-  Linkedin,
   Mail,
   Star,
   Shield,
@@ -22,53 +24,12 @@ import {
   Zap,
   Rocket,
   Map,
-  AlertOctagon,
   Activity,
-  ShieldCheck
+  ShieldCheck,
+  User,
+  Building2,
+  LogOut
 } from "lucide-react"
-
-const teamMembers = [
-  {
-    name: "Arsh Tiwari",
-    image: "/arsh1.jpeg?height=200&width=200",
-    bio: "AI/ML & Full Stack Developer",
-    socials: {
-      twitter: "https://twitter.com/alexjohnson",
-      github: "https://github.com/ArshTiwari2004",
-      linkedin: "https://www.linkedin.com/in/arsh-tiwari-072609284/",
-    }
-  },
-  {
-    name: "Priyanshi Bothra",
-    image: "/priyanshi.png?height=200&width=200",
-    bio: "AI/ML & Frontend Developer",
-    socials: {
-      twitter: "https://twitter.com/sarahchen",
-      github: "https://github.com/priyanshi0609",
-      linkedin: "https://www.linkedin.com/in/priyanshi-bothra-339568219/",
-    }
-  },
-  {
-    name: "Nibedan Pati",
-    image: "/nibedan1.jpeg?height=200&width=200",
-    bio: "AI&Ml & Full Stack Developer",
-    socials: {
-      twitter: "https://twitter.com/miguelrodriguez",
-      github: "https://github.com/Heisenberg300604",
-      linkedin: "https://www.linkedin.com/in/nibedan-pati-2139b3277/",
-    }
-  },
-  {
-    name: "Kanishk Verma",
-    image: "/kanishk.jpg?height=200&width=200",
-    bio: "Frontend Developer",
-    socials: {
-      twitter: "https://twitter.com/priyasharma",
-      github: "https://github.com/priyasharma",
-      linkedin: "https://www.linkedin.com/in/kanishkverma7",
-    }
-  },
-]
 
 const features = [
   {
@@ -153,16 +114,49 @@ const AnimatedSection = ({ children, className, delay = 0 }) => {
 }
 
 export default function LandingPage() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { isAuthenticated, isCitizen, isGovernment, user, logout } = useAuth()
+  
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [loginTab, setLoginTab] = useState('citizen')
+
+  // Check if redirected with login intent
+  useEffect(() => {
+    if (location.state?.showLogin) {
+      setShowLoginModal(true)
+      setLoginTab(location.state.loginType || 'citizen')
+    }
+  }, [location])
+
+  const openLogin = (tab) => {
+    setLoginTab(tab)
+    setShowLoginModal(true)
+  }
+
+  const handleDashboardClick = () => {
+    if (isAuthenticated) {
+      navigate(isCitizen ? '/citizen/dashboard' : '/gov/dashboard')
+    } else {
+      openLogin('government')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-950 to-gray-900 text-white relative overflow-hidden">
       <Sparkles />
+      <LoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
+        initialTab={loginTab}
+      />
 
       {/* Enhanced Navigation */}
       <nav className="relative z-10 container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="flex items-center">
           <AlertTriangle className="h-8 w-8 text-blue-500 mr-2 animate-pulse" />
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">
-            Sahyog
+            Crisis Response Dashboard
           </span>
         </div>
         <div className="hidden md:flex space-x-8 items-center">
@@ -172,28 +166,45 @@ export default function LandingPage() {
           <a href="#mission" className="hover:text-blue-400 transition-colors hover:scale-105 transform duration-200">
             Mission
           </a>
-          <a href="#team" className="hover:text-blue-400 transition-colors hover:scale-105 transform duration-200">
-            Team
-          </a>
           <a href="#how-it-works" className="hover:text-blue-400 transition-colors hover:scale-105 transform duration-200">
             How It Works
           </a>
-          <a 
-            href="https://github.com/ArshTiwari2004/Sahyog" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-all"
-          >
-            <Github className="h-4 w-4" />
-            <span>GitHub</span>
-          </a>
         </div>
-        <a 
-          href="/dashboard" 
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 transform hover:-translate-y-1"
-        >
-          Dashboard
-        </a>
+        
+        {/* Auth Buttons */}
+        {isAuthenticated ? (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate(isCitizen ? '/citizen/dashboard' : '/gov/dashboard')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2"
+            >
+              {isCitizen ? <User className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
+              Dashboard
+            </button>
+            <button
+              onClick={logout}
+              className="text-gray-400 hover:text-white transition-colors p-2"
+              title="Logout"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => openLogin('citizen')}
+              className="text-gray-300 hover:text-white px-4 py-2 transition-colors"
+            >
+              Citizen Login
+            </button>
+            <button 
+              onClick={() => openLogin('government')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 transform hover:-translate-y-1"
+            >
+              Government Login
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
@@ -208,20 +219,23 @@ export default function LandingPage() {
             AI-powered platform that reduces emergency response times by 40% through predictive analytics and real-time coordination
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a 
-              href="/dashboard" 
+            <button 
+              onClick={() => openLogin('government')}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30 flex items-center justify-center gap-2"
             >
               <Shield className="h-5 w-5" />
               Government Dashboard
-            </a>
-            <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2 animate-pulse">
+            </button>
+            <button 
+              onClick={() => openLogin('citizen')}
+              className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2 animate-pulse"
+            >
               <AlertOctagon className="h-5 w-5" />
-              Emergency Report
+              Report Emergency
             </button>
           </div>
           <p className="text-gray-400 text-sm mt-4">
-            Citizen app available on iOS and Android
+            Sign up as a citizen to report incidents and receive alerts
           </p>
         </AnimatedSection>
       </section>
@@ -243,7 +257,7 @@ export default function LandingPage() {
                 </div>
                 <p className="text-gray-300">
                   In India, disasters claim thousands of lives annually due to delayed response and poor coordination. 
-                  Sahyog integrates AI prediction with real-time resource tracking to cut response times by 30-40%, 
+                  This AI-Powered Real-Time Operations Dashboard integrates AI prediction with real-time resource tracking to cut response times by 30-40%, 
                   potentially saving millions in high-risk areas.
                 </p>
               </div>
@@ -301,7 +315,7 @@ export default function LandingPage() {
       <section id="how-it-works" className="relative z-10 py-20 bg-gray-900/50 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <AnimatedSection className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How Sahyog Works</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">How Crisis Response Dashboard Works</h2>
             <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-teal-500 mx-auto animate-width"></div>
           </AnimatedSection>
 
@@ -346,68 +360,26 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section id="team" className="relative z-10 py-20 bg-gray-900/50 backdrop-blur-sm">
-        <div className="container mx-auto px-6">
-          <AnimatedSection className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Team</h2>
-            <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-teal-500 mx-auto animate-width"></div>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <AnimatedSection
-                key={index}
-                delay={index * 100}
-                className="bg-gray-800/30 backdrop-blur-sm rounded-xl border border-gray-700 overflow-hidden group transition-all duration-500 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10"
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-70"></div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-1">{member.name}</h3>
-                  <p className="text-gray-300 text-sm mb-4">{member.bio}</p>
-                  <div className="flex space-x-4">
-                    {member.socials.github && (
-                      <a href={member.socials.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-purple-400 transition-colors">
-                        <Github className="h-5 w-5" />
-                      </a>
-                    )}
-                    {member.socials.linkedin && (
-                      <a href={member.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
-                        <Linkedin className="h-5 w-5" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="relative z-10 py-20">
         <div className="container mx-auto px-6">
           <AnimatedSection className="bg-gradient-to-r from-blue-900/50 to-teal-900/50 backdrop-blur-sm rounded-2xl p-10 border border-blue-800/50 hover:border-blue-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/20 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Disaster Response?</h2>
             <p className="text-gray-300 max-w-2xl mx-auto mb-8">
-              Join governments and communities using Sahyog to save lives and resources
+              Join governments and communities using this AI-Powered Crisis Response Dashboard to save lives and resources
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <a 
-                href="/dashboard" 
+              <button 
+                onClick={() => openLogin('government')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30"
               >
                 Government Login
-              </a>
-              <button className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-                Request Demo
+              </button>
+              <button 
+                onClick={() => openLogin('citizen')}
+                className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+              >
+                Citizen Sign Up
               </button>
             </div>
           </AnimatedSection>
@@ -421,7 +393,7 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center mb-4">
                 <AlertTriangle className="h-6 w-6 text-blue-500 mr-2" />
-                <span className="text-xl font-bold">Sahyog</span>
+                <span className="text-xl font-bold">Crisis Response Dashboard</span>
               </div>
               <p className="text-gray-400 mb-4">AI-powered disaster management platform</p>
             </div>
@@ -448,19 +420,19 @@ export default function LandingPage() {
               <ul className="space-y-2">
                 <li className="flex items-center">
                   <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                  <span className="text-gray-400">contact@sahyog.com</span>
+                  <span className="text-gray-400">contact@crisisresponse.com</span>
                 </li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-            <p>&copy; {new Date().getFullYear()} Sahyog. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} AI-Powered Real-Time Operations Dashboard for Crisis Response. All rights reserved.</p>
           </div>
         </div>
       </footer>
 
-      <style jsx global>{`
+      <style>{`
         @keyframes twinkle {
           0%, 100% { opacity: 0.1; }
           50% { opacity: 0.7; }

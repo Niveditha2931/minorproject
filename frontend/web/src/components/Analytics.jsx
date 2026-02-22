@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 const Analytics = () => {
@@ -39,9 +38,7 @@ const Analytics = () => {
   ];
 
   return (
-    <div className="flex bg-[#0F172A] min-h-screen text-white">
-      <Sidebar />
-      <div className="flex-1 p-8">
+    <div className="text-white">
         <h1 className="text-3xl font-bold mb-6 text-blue-300">Analytics</h1>
         
         <div className="flex mb-4 space-x-4">
@@ -229,7 +226,6 @@ const Analytics = () => {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 };

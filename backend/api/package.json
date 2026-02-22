@@ -1,7 +1,7 @@
 {
-  "name": "sahyog-backend",
+  "name": "crisis-response-dashboard-backend",
   "version": "1.0.0",
-  "description": "backend for disaster management app",
+  "description": "Backend for AI-Powered Real-Time Operations Dashboard for Crisis Response",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -13,15 +13,16 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.8.4",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.12.2",
     "morgan": "^1.10.0",
-    "pg": "^8.14.1",
-    "sequelize": "^6.37.6",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "eslint": "^9.23.0",

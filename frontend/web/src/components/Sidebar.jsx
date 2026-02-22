@@ -12,11 +12,13 @@ import {
   Bell,
   LogOut,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Brain,
+  Truck
 } from "lucide-react";
 
 const Sidebar = ({ 
-  brandName = "Sahyog", 
+  brandName = "Crisis Response Dashboard", 
   onTabChange,
   defaultActiveTab = 'dashboard',
   userRole = 'admin' // Default to admin, can be 'operator' or 'viewer'
@@ -87,6 +89,20 @@ const Sidebar = ({
         route: '/analytics', 
         key: 'analytics',
         roles: ['admin', 'operator', 'viewer']
+      },
+      { 
+        name: 'AI Risk Prediction', 
+        icon: Brain, 
+        route: '/risk-prediction', 
+        key: 'risk-prediction',
+        roles: ['admin', 'operator', 'viewer']
+      },
+      { 
+        name: 'Resource Optimizer', 
+        icon: Truck, 
+        route: '/resource-optimization', 
+        key: 'resource-optimization',
+        roles: ['admin', 'operator']
       }
     ],
     admin: [

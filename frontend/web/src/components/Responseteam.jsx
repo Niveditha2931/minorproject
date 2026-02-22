@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
 const ResponseTeams = () => {
   const [activeTab, setActiveTab] = useState('status');
 
   return (
-    <div className="flex bg-[#0F172A] min-h-screen text-white">
-      <Sidebar />
-      <div className="flex-1 p-8">
+    <div className="text-white">
         <h1 className="text-3xl font-bold mb-6 text-blue-300">Response Teams</h1>
         
         <div className="flex mb-4 space-x-4">
@@ -164,7 +161,6 @@ const ResponseTeams = () => {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 };

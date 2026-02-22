@@ -197,13 +197,13 @@ class ResourceAllocator:
         
         return plan
     
-    def generate_blockchain_records(self, allocation_plan):
+    def generate_audit_records(self, allocation_plan):
         """
-        Prepare allocation records for Hyperledger Fabric
+        Prepare allocation records for REST API audit logging
         Args:
             allocation_plan: Output from optimize_transport()
         Returns:
-            List of blockchain transactions
+            List of audit records for database storage
         """
         transactions = []
         for alloc in allocation_plan['allocations']:

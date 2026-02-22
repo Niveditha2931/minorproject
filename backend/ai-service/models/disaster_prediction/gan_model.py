@@ -129,7 +129,7 @@ class DisasterGAN:
         """
         Prepare real disaster images for GAN training
         Args:
-            real_images: Raw satellite/drone images from your Kafka stream
+            real_images: Raw satellite/drone images from REST API uploads
             labels: Corresponding disaster class labels
         Returns:
             Normalized and reshaped images ready for training

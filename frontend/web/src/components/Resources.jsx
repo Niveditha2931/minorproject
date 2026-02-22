@@ -8,7 +8,6 @@ import {
   Filter, 
   X 
 } from 'lucide-react';
-import Sidebar from './Sidebar';
 
 const Resources = () => {
   const [activeTab, setActiveTab] = useState('tracking');
@@ -117,9 +116,7 @@ const Resources = () => {
   const resourceTypes = [...new Set(resourceInventory.map(r => r.type))];
 
   return (
-    <div className="flex bg-[#0F172A] min-h-screen text-white">
-      <Sidebar />
-      <div className="flex-1 p-8">
+    <div className="text-white">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold flex items-center">
             <Package className="w-8 h-8 mr-3 text-blue-400" />
@@ -306,7 +303,6 @@ const Resources = () => {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 };

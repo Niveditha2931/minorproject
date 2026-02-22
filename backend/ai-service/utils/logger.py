@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Dict, Any
 
 class AppLogger:
-    def __init__(self, name: str = 'sahyog-ai'):
+    def __init__(self, name: str = 'crisis-response-ai'):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.INFO)
         

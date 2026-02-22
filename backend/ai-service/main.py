@@ -14,7 +14,7 @@
 # vertex_ai.init(project=os.getenv("GCP_PROJECT_ID"), location=os.getenv("GCP_LOCATION"))
 
 # # Initialize FastAPI app
-# app = FastAPI(title="Sahyog AI Service", description="AI services for disaster management")
+# app = FastAPI(title="Crisis Response AI Service", description="AI services for disaster management")
 
 # # Configure CORS
 # app.add_middleware(
@@ -38,7 +38,7 @@
 # # Routes
 # @app.get("/")
 # def read_root():
-#     return {"message": "Welcome to Sahyog AI Service"}
+#     return {"message": "Welcome to Crisis Response AI Service"}
 
 # @app.post("/predict/disaster")
 # async def predict_disaster(request: DisasterPredictionRequest):
@@ -75,6 +75,8 @@
 # ai-service/main.py
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 from typing import Optional, List
 import logging
 from datetime import datetime
@@ -88,11 +90,60 @@ from services.gcp_service import GCPService
 from models.damage_assessment.image_classifier import DamageClassifier
 from models.resource_optimization.predictive_model import ResourcePredictor
 
-# Initialize the app
+# Import data ingestion routers
+from services.data_ingestion import weather_router, earthquake_router, fire_router
+from services.scheduler import data_scheduler
+
+# Import risk prediction service
+from services.risk_prediction import risk_router
+
+# Configure logging early
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+# Initialize service instances (in production, use dependency injection)
+vertex_service = VertexAIService()
+gemini_service = GeminiService()
+gcp_service = GCPService()
+damage_classifier = DamageClassifier()
+resource_predictor = ResourcePredictor()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager for startup/shutdown events"""
+    # Startup
+    logger.info("Starting AI service...")
+    
+    # Initialize database and scheduler
+    await data_scheduler.init_database()
+    data_scheduler.start()
+    
+    # Load AI models
+    try:
+        damage_classifier.load("models/damage_classifier.h5")
+        resource_predictor.load_models("models/resource_predictor")
+        logger.info("AI models loaded successfully")
+    except Exception as e:
+        logger.warning(f"Models not loaded (may not exist yet): {e}")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down AI service...")
+    data_scheduler.stop()
+    await data_scheduler.close_database()
+
+
+# Initialize the app with lifespan
 app = FastAPI(
-    title="Sahyog AI Service",
+    title="AI-Powered Real-Time Operations Dashboard for Crisis Response - AI Service",
     description="API for disaster management AI capabilities",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Set up CORS
@@ -104,36 +155,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize services (in production, use dependency injection)
-vertex_service = VertexAIService()
-gemini_service = GeminiService()
-gcp_service = GCPService()
-damage_classifier = DamageClassifier()
-resource_predictor = ResourcePredictor()
+# Include data ingestion routers
+app.include_router(weather_router, prefix="/api/data")
+app.include_router(earthquake_router, prefix="/api/data")
+app.include_router(fire_router, prefix="/api/data")
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize models and services on startup"""
-    try:
-        # Load models (in production, these would be loaded from Vertex AI)
-        damage_classifier.load("models/damage_classifier.h5")
-        resource_predictor.load_models("models/resource_predictor")
-        
-        logger.info("AI models loaded successfully")
-    except Exception as e:
-        logger.error(f"Failed to initialize models: {str(e)}")
-        raise
+# Include risk prediction router
+app.include_router(risk_router, prefix="/api/prediction")
 
 @app.get("/")
 def health_check():
     """Health check endpoint"""
+    scheduler_status = data_scheduler.get_job_status()
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
@@ -141,8 +174,34 @@ def health_check():
             "vertex": True,
             "gemini": True,
             "gcp": True
+        },
+        "scheduler": {
+            "running": scheduler_status["is_running"],
+            "jobs_count": len(scheduler_status["jobs"])
         }
     }
+
+
+@app.get("/api/scheduler/status")
+def get_scheduler_status():
+    """Get detailed scheduler status and job information"""
+    return data_scheduler.get_job_status()
+
+
+@app.post("/api/scheduler/trigger/{job_name}")
+async def trigger_job(job_name: str):
+    """Manually trigger a scheduled job"""
+    job_map = {
+        "weather": data_scheduler.fetch_and_store_weather,
+        "earthquake": data_scheduler.fetch_and_store_earthquakes,
+        "fire": data_scheduler.fetch_and_store_fires
+    }
+    
+    if job_name not in job_map:
+        raise HTTPException(status_code=404, detail=f"Job '{job_name}' not found")
+    
+    await job_map[job_name]()
+    return {"message": f"Job '{job_name}' triggered successfully"}
 
 @app.post("/predict/disaster")
 async def predict_disaster(

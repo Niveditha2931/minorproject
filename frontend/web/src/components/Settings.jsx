@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from './Sidebar';
 import { 
   Shield, 
   Bell, 
@@ -19,7 +18,7 @@ const Settings = () => {
   });
 
   const [apiStatus, setApiStatus] = useState({
-    kafka: 'Disconnected',
+    websocket: 'Disconnected',
     vertexAI: 'Disconnected',
     gemini: 'Disconnected'
   });
@@ -29,12 +28,12 @@ const Settings = () => {
     const checkApiStatus = async () => {
       try {
         // Simulated API checks
-        const kafkaStatus = Math.random() > 0.2 ? 'Connected' : 'Disconnected';
+        const websocketStatus = Math.random() > 0.2 ? 'Connected' : 'Disconnected';
         const vertexAIStatus = Math.random() > 0.1 ? 'Connected' : 'Disconnected';
         const geminiStatus = Math.random() > 0.15 ? 'Connected' : 'Disconnected';
 
         setApiStatus({
-          kafka: kafkaStatus,
+          websocket: websocketStatus,
           vertexAI: vertexAIStatus,
           gemini: geminiStatus
         });
@@ -82,9 +81,7 @@ const Settings = () => {
   );
 
   return (
-    <div className="flex bg-[#0F172A] min-h-screen text-white">
-        <Sidebar />
-      <div className="container mx-auto max-w-4xl py-12 px-4">
+    <div className="text-white container mx-auto max-w-4xl py-12 px-4">
         <h1 className="text-4xl font-bold mb-10 text-center text-blue-400">
           System Configuration
         </h1>
@@ -240,7 +237,6 @@ const Settings = () => {
           <p>Version 1.0.0 • Last Updated: March 2025</p>
         </div>
       </div>
-    </div>
   );
 };
 
